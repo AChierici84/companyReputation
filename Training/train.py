@@ -56,6 +56,8 @@ def train(model_path,push_to_hub=False):
     print(f"Validation set: {count_validation} samples, distribution: {distribution_validation}")
     print(f"Total samples: {total}")
 
+    # Tokenizzazione del dataset
+    
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path, num_labels=3)
     tokenized_dataset = dataset.map(tokenize, batched=True)
