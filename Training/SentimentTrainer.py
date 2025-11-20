@@ -32,7 +32,7 @@ class SentimentTrainer:
         self.accuracy = evaluate.load("accuracy")
         self.f1 = evaluate.load("f1")
 
-    def compute_metrics(eval_pred):
+    def compute_metrics(self,eval_pred):
         """
         Calcola le metriche di accuratezza e F1 score.
         Args:
@@ -47,7 +47,7 @@ class SentimentTrainer:
                 "f1": self.f1.compute(predictions=preds, references=labels, average="macro")["f1"]
             }
 
-    def tokenize(batch):
+    def tokenize(self,batch):
         """
         Tokenizza un batch di testi.
         Args:
@@ -63,7 +63,7 @@ class SentimentTrainer:
         )
 
 
-    def train(model_path,push_to_hub=False):
+    def train(self,model_path,push_to_hub=False):
         """
         Addestra un modello di sentiment analysis utilizzando il dataset tweet_eval.
         Args:
@@ -101,7 +101,7 @@ class SentimentTrainer:
         logger.info("Tokenizing dataset...")
         tokenizer = AutoTokenizer.from_pretrained(model_path)
         model = AutoModelForSequenceClassification.from_pretrained(model_path, num_labels=3)
-        tokenized_dataset = dataset.map(tokenize, batched=True)
+        tokenized_dataset = dataset.map(self.tokenize, batched=True)
 
         tokenized_dataset = tokenized_dataset.rename_column("label", "labels")
         tokenized_dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
@@ -129,7 +129,7 @@ class SentimentTrainer:
             args=training_args,
             train_dataset=tokenized_dataset["train"],
             eval_dataset=tokenized_dataset["validation"],
-            compute_metrics=compute_metrics
+            compute_metrics=self.compute_metrics
         )
 
         # Addestramento del modello
