@@ -63,7 +63,7 @@ class SentimentTrainer:
         )
 
 
-    def train(self,model_path,push_to_hub=False):
+    def train(self,push_to_hub=False):
         """
         Addestra un modello di sentiment analysis utilizzando il dataset tweet_eval.
         Args:
@@ -99,8 +99,8 @@ class SentimentTrainer:
 
         # Tokenizzazione del dataset
         logger.info("Tokenizing dataset...")
-        tokenizer = AutoTokenizer.from_pretrained(model_path)
-        model = AutoModelForSequenceClassification.from_pretrained(model_path, num_labels=3)
+        tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        model = AutoModelForSequenceClassification.from_pretrained(self.model_path, num_labels=3)
         tokenized_dataset = dataset.map(self.tokenize, batched=True)
 
         tokenized_dataset = tokenized_dataset.rename_column("label", "labels")
@@ -134,7 +134,16 @@ class SentimentTrainer:
 
         # Addestramento del modello
         logger.info("Starting training...")
-        history=trainer.train()
+        trainer.train()
+        logger.info("Training completed.")
+        
+        #dump dei log di addestramento
+        log_history = trainer.state.log_history
+        for log in log_history:
+            logger.info(log)
+
+        # Valutazione del modello
+        logger.info("Evaluating model...")
         results=trainer.evaluate(eval_dataset=tokenized_dataset["test"])
         logger.info(results)
 
@@ -158,6 +167,6 @@ class SentimentTrainer:
         return results
 
 if __name__ == "__main__":
-    trainer = SentimentTrainer("roberta-base")
+    trainer = SentimentTrainer(model_path="AChierici84/sentiment-roberta-finetuned", max_length=180)
     results = trainer.train(push_to_hub=True)
     print(results)
