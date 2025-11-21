@@ -76,7 +76,7 @@ Sono stati realizzati quindi i seguenti moduli python:
 * Testing module : test di integrazione e raggiungilità dei componenti necessari al crawling e all'analisi
 
 Sono state inoltre predisposte le seguenti azioni GitHub:
-* Crawl and Analysis : eseguita ogni ora scarica il differensiale dei tweet inviati all'account di customer support
+* Crawl and Analysis : eseguita ogni ora scarica i nuovi tweet inviati all'account di customer support
 * Continous integration : esecuzione unit test e integration test ad od ogni push/pull
 * Training and continuous deployement: eseguita ogni giorno alle 00:00 se esiston nuovi feedback
 
