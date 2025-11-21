@@ -74,7 +74,7 @@ class SentimentTrainer:
             batch["text"],
             truncation=True,
             padding="max_length",
-            max_length=128
+            max_length=self.max_length
         )
 
 
@@ -87,12 +87,29 @@ class SentimentTrainer:
         Returns:
             dict: I risultati della valutazione del modello sul set di test.
         """
+
         logger.info("Loading dataset...")
         dataset = load_dataset("tweet_eval", "sentiment")
+        retrain = False
 
         #aggiungo al training set i dati di feedback se ci sono
         feedback_dir=os.path.join("..","data","feedback")
         if os.path.exists(feedback_dir):
+           logger.info("Feedback directory found.")
+           # Controlla se ci sono file di feedback recenti
+           for file in os.listdir(feedback_dir):
+               logger.info(f"Found feedback file: {file}")
+               # get file last edit
+               ti_m = os.path.getmtime(file)
+               last_edit = datetime.fromtimestamp(ti_m)
+               logger.info(f"Last modified time: {last_edit}")
+               if (datetime.now() - last_edit).days <= 1:
+                   logger.info("Recent feedback data found.")
+                   retrain = True
+                   break
+               else :
+                   logger.info("No recent feedback data found.")
+        if retrain:
             feedback_files = [f for f in os.listdir(feedback_dir) if f.endswith(".csv")]
             if feedback_files:
                 logger.info("updating training set with feedback data...")
@@ -109,6 +126,11 @@ class SentimentTrainer:
                 # Unisci i dataset
                 dataset["train"] = dataset["train"].concatenate(feedback_dataset)
                 logger.info(f"Added {len(feedback_dataset)} samples from feedback to training set.")
+        else:
+            logger.info("No retrain needed.")
+            #exit the training function
+            return {}
+
 
         # Statistiche del dataset
         logger.info("Evaluating distribution...")
