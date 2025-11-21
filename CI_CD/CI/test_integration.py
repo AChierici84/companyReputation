@@ -1,7 +1,7 @@
 from transformers import pipeline
 
 
-class IntegrationTestClass:
+class TestIntegration:
     """
     Classe di test di integrazione
     """
