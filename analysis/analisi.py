@@ -54,8 +54,9 @@ class Analisi:
                 sentiments = sentiment_task(texts)
                 end_time = time.time()
                 logger.info(f"Sentiment analysis took {end_time - start_time} seconds")
-                # aggiungi i risultati al dataframe
+                # aggiungi i risultati al dataframe (label e percentuale di confidenza)
                 df['sentiment'] = [sentiment['label'] for sentiment in sentiments]
+                df['confidence'] = [sentiment['score'] for sentiment in sentiments]
                 # salva i risultati in un nuovo file csv
                 output_file = os.path.join(self.dir, f"analyzed_{file}")
                 df.to_csv(output_file, index=False)
