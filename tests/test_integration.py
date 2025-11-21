@@ -1,4 +1,6 @@
+import os
 from transformers import pipeline
+from dotenv import load_dotenv
 
 
 class TestIntegration:
@@ -17,9 +19,32 @@ class TestIntegration:
         assert result[0]['label'] == 'positive'
 
     def test_twitter_connection(self):
-        from crawling import Crawler
+        from crawling.crawler import Crawler
 
         crawler = Crawler()
         bearer = crawler.get_bearer()
         assert len(bearer) > 0
         print("Bearer token retrieved successfully.")
+
+    def test_hf_token(self):
+        load_dotenv()
+        hf_token = os.getenv("HF_TOKEN")
+        assert len(hf_token) > 0
+        print("Hugging Face token retrieved successfully.")
+
+    def test_hf_token(self):
+        load_dotenv()
+        hf_token = os.getenv("HF_TOKEN")
+        assert len(hf_token) > 0
+        print("Hugging Face token retrieved successfully.")
+
+    def test_api_keys(self):
+        load_dotenv()
+        api_key = os.getenv("API_KEY")
+        api_key_secret = os.getenv("API_KEY_SECRET")
+        bearer_token = os.getenv("BEARER_TOKEN")
+        assert len(api_key) > 0
+        assert len(api_key_secret) > 0
+        assert len(bearer_token) > 0
+        print("API keys retrieved successfully.")
+    

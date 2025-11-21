@@ -89,6 +89,26 @@ class SentimentTrainer:
         logger.info("Loading dataset...")
         dataset = load_dataset("tweet_eval", "sentiment")
 
+        #aggiungo al training set i dati di feedback se ci sono
+        feedback_dir=os.path.join("..","data","feedback")
+        if os.path.exists(feedback_dir):
+            feedback_files = [f for f in os.listdir(feedback_dir) if f.endswith(".csv")]
+            if feedback_files:
+                logger.info("updating training set with feedback data...")
+                feedback_dfs = []
+                for file in feedback_files:
+                    file_path = os.path.join(feedback_dir, file)
+                    df = pd.read_csv(file_path)
+                    feedback_dfs.append(df)
+                feedback_data = pd.concat(feedback_dfs, ignore_index=True)
+                # Mappa i valori di user_feedback a etichette numeriche
+                label_mapping = {"negative": 0, "neutral": 1, "positive": 2, "0": 0, "1": 1, "2": 2}
+                feedback_data['label'] = feedback_data['user_feedback'].map(label_mapping)
+                feedback_dataset = dataset["train"].from_pandas(feedback_data[['text', 'label']])
+                # Unisci i dataset
+                dataset["train"] = dataset["train"].concatenate(feedback_dataset)
+                logger.info(f"Added {len(feedback_dataset)} samples from feedback to training set.")
+
         # Statistiche del dataset
         logger.info("Evaluating distribution...")
         count_train = len(dataset["train"])
