@@ -66,7 +66,7 @@ Il modello realizzato seppure non raggiunge prestazioni ottime si attesa su un d
 Sarà utile aggiungere tweet più mirati sull'azienda scelta per aumentare le prestazioni del modello.
 
 Il modello realizzato è stato salvato su hugging fase ed è disponibile al seguente link
-[https://huggingface.co/AChierici84/sentiment-roberta-finetuned] (https://huggingface.co/AChierici84/sentiment-roberta-finetuned)
+[https://huggingface.co/AChierici84/sentiment-roberta-finetuned](https://huggingface.co/AChierici84/sentiment-roberta-finetuned)
 
 Sono stati realizzati quindi i seguenti moduli python:
 * Crawling module : scaricamento di tweet di un account X di customer support Es. @AmazonHelp
@@ -76,7 +76,7 @@ Sono stati realizzati quindi i seguenti moduli python:
 * Testing module : test di integrazione e raggiungilità dei componenti necessari al crawling e all'analisi
 
 Sono state inoltre predisposte le seguenti azioni GitHub:
-* Crawl and Analysis : eseguita ogni ora scarica il differensiale dei tweet inviati all'account di customer support
+* Crawl and Analysis : eseguita ogni ora scarica i nuovi tweet inviati all'account di customer support
 * Continous integration : esecuzione unit test e integration test ad od ogni push/pull
 * Training and continuous deployement: eseguita ogni giorno alle 00:00 se esiston nuovi feedback
 
