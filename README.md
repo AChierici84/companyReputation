@@ -66,7 +66,7 @@ Il modello realizzato seppure non raggiunge prestazioni ottime si attesa su un d
 Sarà utile aggiungere tweet più mirati sull'azienda scelta per aumentare le prestazioni del modello.
 
 Il modello realizzato è stato salvato su hugging fase ed è disponibile al seguente link
-[https://huggingface.co/AChierici84/sentiment-roberta-finetuned] (https://huggingface.co/AChierici84/sentiment-roberta-finetuned)
+[https://huggingface.co/AChierici84/sentiment-roberta-finetuned](https://huggingface.co/AChierici84/sentiment-roberta-finetuned)
 
 Sono stati realizzati quindi i seguenti moduli python:
 * Crawling module : scaricamento di tweet di un account X di customer support Es. @AmazonHelp
