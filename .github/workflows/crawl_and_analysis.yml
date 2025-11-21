@@ -40,4 +40,4 @@ jobs:
     - name: Analyze Data
       working-directory: "analysis"
       run: |
-        python analysis.py
+        python analisi.py
