@@ -40,4 +40,7 @@ jobs:
       run: echo "PYTHONPATH=$PYTHONPATH:$PWD" >> $GITHUB_ENV
     - name: Test with pytest
       run: |
+        echo "TWITTER_API_KEY=${{secrets.TWITTER_API_KEY}}" >> $GITHUB_ENV
+        echo "TWITTER_API_SECRET=${{secrets.TWITTER_API_SECRET}}" >> $GITHUB_ENV
+        echo "TWITTER_BEARER_TOKEN=${{secrets.TWITTER_BEARER_TOKEN}}" >> $GITHUB_ENV
         pytest

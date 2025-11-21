@@ -13,6 +13,7 @@ from transformers import (
     set_seed
 )
 from datasets import load_dataset
+load_dotenv()
 
 # Crea logs directory se non c'è
 log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
@@ -186,7 +187,7 @@ class SentimentTrainer:
 
         # Salvataggio o caricamento del modello su Hugging Face Hub
         if push_to_hub:
-            
+
             login(token=os.getenv("HF_TOKEN")) # Effettua il login utilizzando il token di accesso
 
             repo_name = "sentiment-roberta-finetuned"  # il nome che vuoi dare al modello sul tuo account
