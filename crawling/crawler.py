@@ -7,10 +7,17 @@ from dotenv import load_dotenv
 import json
 from requests.auth import AuthBase, HTTPBasicAuth
 
+# Crea logs directory se non c'è
+log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
+log_dir = os.path.abspath(log_dir)
+os.makedirs(log_dir, exist_ok=True)
+
+log_file = os.path.join(log_dir, 'crawler.log')
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 #set logging file handler
-file_handler = logging.FileHandler('../logs/crawler.log')
+file_handler = logging.FileHandler(log_file)
 file_handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)

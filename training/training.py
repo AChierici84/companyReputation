@@ -14,9 +14,16 @@ from transformers import (
 )
 from datasets import load_dataset
 
+# Crea logs directory se non c'è
+log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
+log_dir = os.path.abspath(log_dir)
+os.makedirs(log_dir, exist_ok=True)
+
+log_file = os.path.join(log_dir, 'training.log')
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-file_handler = logging.FileHandler('../logs/training.log')
+file_handler = logging.FileHandler(log_file)
 file_handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
