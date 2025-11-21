@@ -38,7 +38,7 @@ class Crawler:
 
         # Parametri: start_time,end_time,since_id,until_id,max_results,next_token,
         # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-        self.query_params = {'query': '#KEY#','tweet.fields': 'author_id', 'max_results': '100', 'lang': 'en'}
+        self.query_params = {'query': '#KEY#','tweet.fields': 'author_id', 'max_results': '100'}
 
     def get_bearer(self):
         """
@@ -90,7 +90,7 @@ class Crawler:
             for keyword in keywords:
                 logger.info(f"Crawling tweets for keyword: {keyword.strip()}")
                 keyword = keyword.strip()
-                self.query_params['query'] = keyword
+                self.query_params['query'] = keyword+" lang:en -is:retweet"
 
                 #se trova un file con last id, lo usa per riprendere il crawling
                 data_dir=os.path.join("data","crawled")
