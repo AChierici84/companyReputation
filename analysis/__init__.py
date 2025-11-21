@@ -1,1 +1,1 @@
-from .analysis import Analisi
+from .analisi import Analisi
