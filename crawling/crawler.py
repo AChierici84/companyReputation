@@ -26,9 +26,9 @@ load_dotenv()
 
 class Crawler:
     def __init__(self):
-        api_key = os.getenv("TWITTER_API_KEY")
-        api_secret = os.getenv("TWITTER_API_SECRET")
-        bearer_token = os.getenv("TWITTER_BEARER_TOKEN")
+        api_key = os.getenv("API_KEY")
+        api_secret = os.getenv("API_KEY_SECRET")
+        bearer_token = os.getenv("BEARER_TOKEN")
 
         if not api_key or not api_secret or not bearer_token:
             raise RuntimeError("Twitter API credentials not found in environment variables")

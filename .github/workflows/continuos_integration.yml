@@ -7,9 +7,9 @@ on:
     branches: [ "main" ]
 
 env:
-  TWITTER_API_KEY: ${{secrets.API_KEY}}
-  TWITTER_API_SECRET: ${{secrets.API_KEY_SECRET}}
-  TWITTER_BEARER_TOKEN: ${{secrets.BEARER_TOKEN}}
+  API_KEY: ${{secrets.API_KEY}}
+  API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
+  BEARER_TOKEN: ${{secrets.BEARER_TOKEN}}
 
 permissions:
   contents: write
@@ -40,7 +40,7 @@ jobs:
       run: echo "PYTHONPATH=$PYTHONPATH:$PWD" >> $GITHUB_ENV
     - name: Test with pytest
       run: |
-        echo "TWITTER_API_KEY=${{secrets.API_KEY}}" >> $GITHUB_ENV
-        echo "TWITTER_API_SECRET=${{secrets.API_KEY_SECRET}}" >> $GITHUB_ENV
-        echo "TWITTER_BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
+        echo "API_KEY=${{secrets.API_KEY}}" >> $GITHUB_ENV
+        echo "API_KEY_SECRET=${{secrets.API_KEY_SECRET}}" >> $GITHUB_ENV
+        echo "BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
         pytest
