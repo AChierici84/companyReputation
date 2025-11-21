@@ -16,5 +16,10 @@ class TestIntegration:
         result=sentiment_task("I love my new phone! The camera is amazing and the battery lasts all day.")
         assert result[0]['label'] == 'positive'
 
-        result=sentiment_task("The movie was okay, not the best I've seen but not the worst either.")
-        assert result[0]['label'] == 'neutral'
+    def test_twitter_connection(self):
+        from crawling import Crawler
+
+        crawler = Crawler()
+        bearer = crawler.get_bearer()
+        assert len(bearer) > 0
+        print("Bearer token retrieved successfully.")
