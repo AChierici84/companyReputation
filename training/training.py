@@ -2,6 +2,7 @@ import os
 import logging
 from datetime import datetime
 import numpy as np
+import pandas as pd
 import evaluate
 from huggingface_hub import login
 from dotenv import load_dotenv
