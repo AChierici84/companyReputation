@@ -5,6 +5,3 @@ CI_CD/CI/__pycache__/*
 .pytest_cache/
 __pycache__/
 logs/
-data/crawled/
-data/training_logs/
-data/training/
