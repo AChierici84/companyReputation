@@ -22,19 +22,19 @@ file_handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-load_dotenv()
 
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
-API_KEY = os.getenv("API_KEY")
-API_KEY_SECRET = os.getenv("API_KEY_SECRET")
-BEARER_TOKEN = os.getenv("BEARER_TOKEN")
 
 class Crawler:
     def __init__(self):
-        self.auth = HTTPBasicAuth(API_KEY, API_KEY_SECRET)
+        api_key = os.getenv("TWITTER_API_KEY")
+        api_secret = os.getenv("TWITTER_API_SECRET")
+        bearer_token = os.getenv("TWITTER_BEARER_TOKEN")
+
+        if not api_key or not api_secret or not bearer_token:
+            raise RuntimeError("Twitter API credentials not found in environment variables")
+        self.auth = HTTPBasicAuth(api_key, api_secret)
         self.search_url = "https://api.twitter.com/2/tweets/search/recent"
-        self.bearerToken = BEARER_TOKEN
+        self.bearerToken = bearer_token
 
         # Parametri: start_time,end_time,since_id,until_id,max_results,next_token,
         # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields

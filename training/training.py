@@ -186,7 +186,7 @@ class SentimentTrainer:
 
         # Salvataggio o caricamento del modello su Hugging Face Hub
         if push_to_hub:
-            load_dotenv()
+            
             login(token=os.getenv("HF_TOKEN")) # Effettua il login utilizzando il token di accesso
 
             repo_name = "sentiment-roberta-finetuned"  # il nome che vuoi dare al modello sul tuo account
