@@ -1,5 +1,6 @@
 import os
 import logging
+from datetime import datetime
 import numpy as np
 import evaluate
 from huggingface_hub import login
@@ -15,6 +16,11 @@ from datasets import load_dataset
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+file_handler = logging.FileHandler('../logs/training.log')
+file_handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 class SentimentTrainer:
 
@@ -133,20 +139,43 @@ class SentimentTrainer:
         )
 
         # Addestramento del modello
+        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         logger.info("Starting training...")
         trainer.train()
         logger.info("Training completed.")
-        
+        end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         #dump dei log di addestramento
-        log_history = trainer.state.log_history
-        for log in log_history:
-            logger.info(log)
+        train_log = trainer.state.log_history
+        log_dir = os.path.join("..", "data", "training")
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_file = os.path.join(log_dir, "train_log"+timestamp+".json")
+        with open(log_file, "w") as f:
+            import json
+            json.dump(train_log, f, indent=4)
+        logger.info(f"Training log saved to {log_file}")
 
         # Valutazione del modello
         logger.info("Evaluating model...")
         results=trainer.evaluate(eval_dataset=tokenized_dataset["test"])
         logger.info(results)
 
+        #salvo in un csv start end e i result in un csv
+        results_file = os.path.join(log_dir, "training_results.csv")
+        import pandas as pd
+        results_df = pd.DataFrame([{
+            "start_time": start_time,
+            "end_time": end_time,
+            **results
+        }])
+        if os.path.exists(results_file):
+            df_existing = pd.read_csv(results_file)
+            df = pd.concat([df_existing, results_df])
+            results_df = df
+        results_df.to_csv(results_file, index=False)
+        logger.info(f"Training results saved to {results_file}")
 
         # Salvataggio o caricamento del modello su Hugging Face Hub
         if push_to_hub:
