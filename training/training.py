@@ -179,17 +179,16 @@ class SentimentTrainer:
         # Configurazione dell'addestramento
         logger.info("Setting up training arguments...")
         training_args = TrainingArguments(
-            output_dir="sentiment-roberta-finetuned",
-            eval_strategy="no",
-            save_strategy="no",
-            learning_rate=2e-5,
-            per_device_train_batch_size=2,
-            per_device_eval_batch_size=2,
-            gradient_accumulation_steps=4,
-            num_train_epochs=2,
-            weight_decay=0.01,
-            load_best_model_at_end=False,
-            logging_steps=100,
+            output_dir="sentiment-roberta-finetuned", #directory di output
+            eval_strategy="epoch", # validaziane alla fine di ogni epoca
+            save_strategy="epoch", # salvataggio del modello alla fine di ogni epoca
+            learning_rate=2e-5,   #learning_rate
+            per_device_train_batch_size=16,  #batch size training
+            per_device_eval_batch_size=16, #batch size validazione
+            num_train_epochs=3, # numero di epoche
+            weight_decay=0.01, #regolarizzazione (riduce i pesi del modello ogni step)
+            load_best_model_at_end=True, #carichiamo il modello migliore
+            logging_steps=50,  # ogni quanti step salvare i log
             report_to=[]
         )
 
