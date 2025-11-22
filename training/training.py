@@ -13,7 +13,8 @@ from transformers import (
     Trainer,
     set_seed
 )
-from datasets import load_dataset
+from datasets import load_dataset, concatenate_datasets
+from datasets import Dataset, Features, ClassLabel, Value
 load_dotenv()
 
 # Crea logs directory se non c'è
@@ -92,6 +93,8 @@ class SentimentTrainer:
         dataset = load_dataset("tweet_eval", "sentiment")
         retrain = False
 
+        set_seed(42)
+
         #aggiungo al training set i dati di feedback se ci sono
         feedback_dir=os.path.join("..","data","feedback")
         if os.path.exists(feedback_dir):
@@ -99,8 +102,9 @@ class SentimentTrainer:
            # Controlla se ci sono file di feedback recenti
            for file in os.listdir(feedback_dir):
                logger.info(f"Found feedback file: {file}")
+               file_path = os.path.join(feedback_dir, file)
                # get file last edit
-               ti_m = os.path.getmtime(file)
+               ti_m = os.path.getmtime(file_path)
                last_edit = datetime.fromtimestamp(ti_m)
                logger.info(f"Last modified time: {last_edit}")
                if (datetime.now() - last_edit).days <= 1:
@@ -116,15 +120,24 @@ class SentimentTrainer:
                 feedback_dfs = []
                 for file in feedback_files:
                     file_path = os.path.join(feedback_dir, file)
+                    logger.info(f"Loading feedback file: {file_path}")
                     df = pd.read_csv(file_path)
                     feedback_dfs.append(df)
                 feedback_data = pd.concat(feedback_dfs, ignore_index=True)
                 # Mappa i valori di user_feedback a etichette numeriche
-                label_mapping = {"negative": 0, "neutral": 1, "positive": 2, "0": 0, "1": 1, "2": 2}
+                label_mapping = {"negative": "negative", "neutral": "neutral", "positive": "positive", "0": "negative", "1": "neutral", "2": "positive", 0: "negative", 1: "neutral", 2: "positive"}
                 feedback_data['label'] = feedback_data['user_feedback'].map(label_mapping)
-                feedback_dataset = dataset["train"].from_pandas(feedback_data[['text', 'label']])
+                feedback_data=feedback_data[['text', 'label']]
+                logger.info(f"Feedback data shape: {feedback_data.shape}")
+                logger.info(f"Feedback data sample:\n{feedback_data.head()}")
+                # Crea un dataset Hugging Face dal DataFrame
+                features = Features({
+                    "text": Value("string"),
+                    "label": ClassLabel(names=["negative", "neutral", "positive"])
+                })
+                feedback_dataset = dataset["train"].from_pandas(feedback_data[['text', 'label']],features=features)
                 # Unisci i dataset
-                dataset["train"] = dataset["train"].concatenate(feedback_dataset)
+                dataset["train"] = concatenate_datasets([dataset["train"], feedback_dataset])
                 logger.info(f"Added {len(feedback_dataset)} samples from feedback to training set.")
         else:
             logger.info("No retrain needed.")
@@ -166,16 +179,17 @@ class SentimentTrainer:
         # Configurazione dell'addestramento
         logger.info("Setting up training arguments...")
         training_args = TrainingArguments(
-            output_dir="sentiment-roberta-finetuned", #directory di output
-            eval_strategy="epoch", # validaziane alla fine di ogni epoca
-            save_strategy="epoch", # salvataggio del modello alla fine di ogni epoca
-            learning_rate=2e-5,   #learning_rate
-            per_device_train_batch_size=16,  #batch size training
-            per_device_eval_batch_size=16, #batch size validazione
-            num_train_epochs=3, # numero di epoche
-            weight_decay=0.01, #regolarizzazione (riduce i pesi del modello ogni step)
-            load_best_model_at_end=True, #carichiamo il modello migliore
-            logging_steps=50,  # ogni quanti step salvare i log
+            output_dir="sentiment-roberta-finetuned",
+            eval_strategy="no",
+            save_strategy="no",
+            learning_rate=2e-5,
+            per_device_train_batch_size=2,
+            per_device_eval_batch_size=2,
+            gradient_accumulation_steps=4,
+            num_train_epochs=2,
+            weight_decay=0.01,
+            load_best_model_at_end=False,
+            logging_steps=100,
             report_to=[]
         )
 
@@ -215,7 +229,7 @@ class SentimentTrainer:
 
         #salvo in un csv start end e i result in un csv
         results_file = os.path.join(log_dir, "training_results.csv")
-        import pandas as pd
+
         results_df = pd.DataFrame([{
             "start_time": start_time,
             "end_time": end_time,
@@ -247,6 +261,6 @@ class SentimentTrainer:
         return results
 
 if __name__ == "__main__":
-    trainer = SentimentTrainer(model_path="AChierici84/sentiment-roberta-finetuned", max_length=180)
+    trainer = SentimentTrainer(model_path="AChierici84/sentiment-roberta-finetuned", max_length=128)
     results = trainer.train(push_to_hub=True)
     print(results)
