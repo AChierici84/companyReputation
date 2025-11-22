@@ -183,12 +183,13 @@ class SentimentTrainer:
             eval_strategy="epoch", # validaziane alla fine di ogni epoca
             save_strategy="epoch", # salvataggio del modello alla fine di ogni epoca
             learning_rate=2e-5,   #learning_rate
-            per_device_train_batch_size=16,  #batch size training
-            per_device_eval_batch_size=16, #batch size validazione
-            num_train_epochs=3, # numero di epoche
+            per_device_train_batch_size=4,  #batch size training
+            per_device_eval_batch_size=4, #batch size validazione
+            num_train_epochs=1, # numero di epoche
             weight_decay=0.01, #regolarizzazione (riduce i pesi del modello ogni step)
             load_best_model_at_end=True, #carichiamo il modello migliore
             logging_steps=50,  # ogni quanti step salvare i log
+            dataloader_num_workers=2, #craicamento dati più veloce
             report_to=[]
         )
 
