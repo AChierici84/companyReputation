@@ -1,0 +1,2 @@
+start_time,end_time,eval_loss,eval_accuracy,eval_f1,eval_runtime,eval_samples_per_second,eval_steps_per_second,epoch
+2025-11-22 14:02:15,2025-11-22 14:02:40,0.19823874533176422,0.9444444444444444,0.9496296296296296,3.5276,5.103,1.417,1.0

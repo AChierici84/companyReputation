@@ -14,7 +14,7 @@ from transformers import (
     set_seed
 )
 from datasets import load_dataset, concatenate_datasets
-from datasets import Dataset, Features, ClassLabel, Value
+from datasets import Dataset, Features, ClassLabel, Value, DatasetDict
 load_dotenv()
 
 # Crea logs directory se non c'è
@@ -45,6 +45,7 @@ class SentimentTrainer:
         self.max_length = max_length
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_path, num_labels=3)
+        
         self.accuracy = evaluate.load("accuracy")
         self.f1 = evaluate.load("f1")
 
@@ -93,6 +94,10 @@ class SentimentTrainer:
         dataset = load_dataset("tweet_eval", "sentiment")
         retrain = False
 
+        # Blocca tutti i layer base di RoBERTa
+        for param in self.model.roberta.parameters():
+            param.requires_grad = False
+
         set_seed(42)
 
         #aggiungo al training set i dati di feedback se ci sono
@@ -137,13 +142,32 @@ class SentimentTrainer:
                 })
                 feedback_dataset = dataset["train"].from_pandas(feedback_data[['text', 'label']],features=features)
                 # Unisci i dataset
-                dataset["train"] = concatenate_datasets([dataset["train"], feedback_dataset])
+                #dataset["train"] = concatenate_datasets([dataset["train"], feedback_dataset])
                 logger.info(f"Added {len(feedback_dataset)} samples from feedback to training set.")
         else:
             logger.info("No retrain needed.")
             #exit the training function
             return {}
 
+
+
+        # Shuffle e split
+        feedback_dataset = feedback_dataset.shuffle(seed=42)
+        split_dataset = feedback_dataset.train_test_split(test_size=0.2)
+
+        train_val_dataset = split_dataset['train']
+        test_dataset = split_dataset['test']
+
+        split_dataset = train_val_dataset.train_test_split(test_size=0.1)
+
+        train_dataset = split_dataset['train']
+        val_dataset = split_dataset['test']
+
+        dataset = DatasetDict({
+            "train": train_dataset,
+            "validation": val_dataset,
+            "test": test_dataset
+        })
 
         # Statistiche del dataset
         logger.info("Evaluating distribution...")
@@ -171,6 +195,11 @@ class SentimentTrainer:
         logger.info("Tokenizing dataset...")
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         model = AutoModelForSequenceClassification.from_pretrained(self.model_path, num_labels=3)
+       
+        #blocco i pesi del modello base
+        for param in model.roberta.parameters():
+            param.requires_grad = False
+
         tokenized_dataset = dataset.map(self.tokenize, batched=True)
 
         tokenized_dataset = tokenized_dataset.rename_column("label", "labels")
@@ -183,12 +212,13 @@ class SentimentTrainer:
             eval_strategy="epoch", # validaziane alla fine di ogni epoca
             save_strategy="epoch", # salvataggio del modello alla fine di ogni epoca
             learning_rate=2e-5,   #learning_rate
-            per_device_train_batch_size=16,  #batch size training
-            per_device_eval_batch_size=16, #batch size validazione
-            num_train_epochs=3, # numero di epoche
+            per_device_train_batch_size=4,  #batch size training
+            per_device_eval_batch_size=4, #batch size validazione
+            num_train_epochs=1, # numero di epoche
             weight_decay=0.01, #regolarizzazione (riduce i pesi del modello ogni step)
             load_best_model_at_end=True, #carichiamo il modello migliore
             logging_steps=50,  # ogni quanti step salvare i log
+            dataloader_num_workers=2, #craicamento dati più veloce
             report_to=[]
         )
 
