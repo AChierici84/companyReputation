@@ -36,17 +36,19 @@ class FeedbackManager:
                 file_path = os.path.join(self.feedback_path, file)
                 logger.info(f"Feedback on file: {file_path}")
                 df = pd.read_csv(file_path)
-                # filtra i tweet con confidenza sotto una soglia (es. 0.6)
-                uncertain_df = df[df['confidence'] < 0.7]
                 # chiedi feedback per ogni tweet incerto
-                for index, row in uncertain_df.iterrows():
-                    print(f"Tweet: {row['text']}")
-                    print(f"Predicted sentiment: {row['sentiment']} with confidence {row['confidence']}")
-                    feedback = input("Please provide the correct sentiment (NEGATIVE=0/NEUTRAL=1/POSITIVE=2): ")
-                    uncertain_df.at[index, 'user_feedback'] = feedback.lower()
+                for index, row in df.iterrows():
+                    # filtra i tweet con confidenza sotto una soglia (es. 0.7) o che non hanno già ricevuto un feedback dell'utente
+                    if row['confidence'] < 0.7 and pd.isna(row["user_feedback"]):
+                        print(f"Tweet: {row['text']}")
+                        print(f"Predicted sentiment: {row['sentiment']} with confidence {row['confidence']}")
+                        feedback = input("Please provide the correct sentiment (NEGATIVE=0/NEUTRAL=1/POSITIVE=2): ")
+                        while feedback not in ["0","1","2"]:
+                             feedback = input("Please provide the correct sentiment (NEGATIVE=0/NEUTRAL=1/POSITIVE=2): ")
+                        df.at[index, 'user_feedback'] = int(feedback)
                 # salva i risultati in un nuovo file csv
                 output_file = os.path.join(self.dir, f"feedback_{file}")
-                uncertain_df.to_csv(output_file, index=False)
+                df.to_csv(output_file, index=False)
                 logger.info(f"Feedback saved to: {output_file}")
 
 if __name__ == "__main__":

@@ -127,6 +127,8 @@ class SentimentTrainer:
                     file_path = os.path.join(feedback_dir, file)
                     logger.info(f"Loading feedback file: {file_path}")
                     df = pd.read_csv(file_path)
+                    #se non trova user feedback usa la colonna sentiment
+                    df["user_feedback"] = df["user_feedback"].fillna(df["sentiment"])
                     feedback_dfs.append(df)
                 feedback_data = pd.concat(feedback_dfs, ignore_index=True)
                 # Mappa i valori di user_feedback a etichette numeriche
