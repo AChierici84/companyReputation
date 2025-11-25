@@ -126,7 +126,7 @@ class Crawler:
                     if "user_feedback" not in df.columns:
                         df["user_feedback"] = None
                     cnx = sqlite3.connect(sql_database_path)
-                    df.to_sql(name='tweets', con=cnx, if_exists='append')
+                    df.to_sql(name='tweets', con=cnx, if_exists='append', index=False)
                     logger.info(f"Saved tweets to {sql_database_path}")
 
                     #salva il last id per riprendere il crawling in futuro
