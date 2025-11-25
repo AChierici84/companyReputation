@@ -78,11 +78,11 @@ Sono stati realizzati quindi i seguenti moduli python:
 Sono state inoltre predisposte le seguenti azioni GitHub:
 * Crawl and Analysis : eseguita ogni ora scarica i nuovi tweet inviati all'account di customer support
 * Continous integration : esecuzione unit test e integration test ad od ogni push/pull
-* Training and continuous deployement: eseguita ogni giorno alle 00:00 se esiston nuovi feedback
+* Training and continuous deployement: eseguita ogni giorno alle 00:00
 
 
-Infine sono state implementate dashboard per il monitorazggio del training e la reputation.
-[https://fluffy-space-robot-977v6w7qgrpq3pw5q-3000.app.github.dev](https://fluffy-space-robot-977v6w7qgrpq3pw5q-3000.app.github.dev)
+Infine sono state implementate dashboard per il monitoraggio del training e la reputation.
+
 
   
  
