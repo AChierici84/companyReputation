@@ -22,7 +22,7 @@ logger.addHandler(file_handler)
 class FeedbackManager:
     def __init__(self, data_path: str):
         self.data_path = data_path
-        self.confidence_threshold=70
+        self.confidence_threshold=0.7
 
     def save_feedback(self):
         """
