@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: Amazon Help Sentiment
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    isDefault: false
+    jsonData:
+      url: "https://raw.githubusercontent.com/AChierici84/companyReputation/main/data/monitoring/monitoring_tweets.csv"
+      dataFormat: "csv"
+    secureJsonData: {}
