@@ -2,8 +2,8 @@ apiVersion: 1
 
 datasources:
   - name: Amazon Help Sentiment
-    type: yesoreyeram-infinity-datasource
+    type: frser-sqlite-datasource
     access: proxy
     isDefault: false
     jsonData:
-      baseURL: "https://raw.githubusercontent.com/AChierici84/companyReputation/main/data/monitoring/"
+      database: "/var/lib/grafana/data/tweet.db"
