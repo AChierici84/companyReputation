@@ -1,0 +1,486 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "customer satisfaction",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "bf57918akycjke"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 1000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "blue",
+                "value": 100
+              },
+              {
+                "color": "green",
+                "value": 200
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 500
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "bf57918akycjke"
+          },
+          "queryText": "SELECT COUNT(*)\nFROM tweets",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(*)\nFROM tweets",
+          "refId": "count",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Tweet Count",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "bf57918akycjke"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "text"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 680
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 4,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "bf57918akycjke"
+          },
+          "queryText": "SELECT text, sentiment\nFROM tweets\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT text, sentiment\nFROM tweets\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Sample tweets",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "bf57918akycjke"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "purple",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "barRadius": 0.3,
+        "barWidth": 0.88,
+        "colorByField": "sentiment",
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "sentiment",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "bf57918akycjke"
+          },
+          "queryText": "SELECT COUNT(*) as count,sentiment\nFROM tweets\nGROUP BY sentiment",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(*) as count,sentiment\nFROM tweets\nGROUP BY sentiment",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Reputation",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "bf57918akycjke"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 16,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "barRadius": 0.25,
+        "barWidth": 0.87,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "date",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 200
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "bf57918akycjke"
+          },
+          "queryText": "SELECT COUNT(*) as count, date\nFROM tweets\nGROUP BY date",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(*) as count, date\nFROM tweets\nGROUP BY date",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Crawled Tweets",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "bf57918akycjke"
+      },
+      "description": "Confidence of sentiment analysis",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "blue",
+                "value": 80
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "displayMode": "lcd",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/^confidence$/",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "bf57918akycjke"
+          },
+          "queryText": "SELECT confidence\nFROM tweets\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT confidence\nFROM tweets\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Medium Confidence",
+      "type": "bargauge"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Amazon Help",
+  "uid": "adzvfdj",
+  "version": 3
+}
