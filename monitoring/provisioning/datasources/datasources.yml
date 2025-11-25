@@ -6,6 +6,4 @@ datasources:
     access: proxy
     isDefault: false
     jsonData:
-      url: "https://raw.githubusercontent.com/AChierici84/companyReputation/main/data/monitoring/monitoring_tweets.csv"
-      dataFormat: "csv"
-    secureJsonData: {}
+      baseURL: "https://raw.githubusercontent.com/AChierici84/companyReputation/main/data/monitoring/"

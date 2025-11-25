@@ -1,4 +1,5 @@
 import os
+import sqlite3
 import time
 import logging
 import pandas as pd
@@ -38,7 +39,7 @@ class Crawler:
 
         # Parametri: start_time,end_time,since_id,until_id,max_results,next_token,
         # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-        self.query_params = {'query': '#KEY#','tweet.fields': 'author_id', 'max_results': '100'}
+        self.query_params = {'query': '#KEY#','tweet.fields': 'author_id,created_at', 'max_results': '100'}
 
     def get_bearer(self):
         """
@@ -106,24 +107,27 @@ class Crawler:
                 print(json.dumps(json_response, indent=4, sort_keys=True))
                 logger.info(f"Found results: {json_response['meta']['result_count']} tweets")
 
-                # Salvare i tweet in un file csv
+                sql_database_path=os.path.join("..","data","tweet.db")
+
+                # Salvare i tweet in un db sqlite
                 if json_response['meta']['result_count'] > 0:
                     tweets = json_response['data']
                     df = pd.DataFrame(tweets)
-                    filename = f"tweets_amazon.csv"
-                    data_dir=os.path.join("..","data","crawled")
-                    if not os.path.exists(data_dir):
-                        os.makedirs(data_dir)
-                    filename=os.path.join(data_dir,filename)
-
-                    #se il file esiste già, aggiunge i nuovi tweet
-                    if os.path.exists(filename):
-                        df_existing = pd.read_csv(filename)
-                        df = pd.concat([df_existing, df]).drop_duplicates(subset=['id'])
-                    
-                    df.to_csv(filename, index=False)
-
-                    logger.info(f"Saved tweets to {filename}")
+                    df["id"] = df["id"].astype(str)
+                    if "author_id" in df.columns:
+                        df["author_id"] = df["author_id"].astype(str)
+                    if "created_at" in df.columns:
+                        df.rename(columns={"created_at": "date"}, inplace=True)
+                        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+                    if "sentiment" not in df.columns:
+                        df["sentiment"] = None
+                    if "confidence" not in df.columns:
+                        df["confidence"] = None
+                    if "user_feedback" not in df.columns:
+                        df["user_feedback"] = None
+                    cnx = sqlite3.connect(sql_database_path)
+                    df.to_sql(name='tweets', con=cnx, if_exists='append')
+                    logger.info(f"Saved tweets to {sql_database_path}")
 
                     #salva il last id per riprendere il crawling in futuro
                     last_id = json_response['data'][-1]['id']

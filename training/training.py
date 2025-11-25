@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 import numpy as np
 import pandas as pd
+import sqlite3
 import evaluate
 from huggingface_hub import login
 from dotenv import load_dotenv
@@ -34,7 +35,7 @@ logger.addHandler(file_handler)
 
 class SentimentTrainer:
 
-    def __init__(self, model_path: str, max_length: int = 128):
+    def __init__(self, data_path: str, model_path: str, max_length: int = 128):
         """
         Inizializza il SentimentTrainer con il modello e il tokenizer specificati.
         Args:
@@ -43,6 +44,7 @@ class SentimentTrainer:
         """
         self.model_path = model_path
         self.max_length = max_length
+        self.data_path = data_path
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_path, num_labels=3)
         
@@ -90,71 +92,34 @@ class SentimentTrainer:
             dict: I risultati della valutazione del modello sul set di test.
         """
 
-        logger.info("Loading dataset...")
-        dataset = load_dataset("tweet_eval", "sentiment")
-        retrain = False
-
-        # Blocca tutti i layer base di RoBERTa
-        for param in self.model.roberta.parameters():
-            param.requires_grad = False
+        
+        conn = sqlite3.connect(self.data_path)
 
         set_seed(42)
-
-        #aggiungo al training set i dati di feedback se ci sono
-        feedback_dir=os.path.join("..","data","feedback")
-        if os.path.exists(feedback_dir):
-           logger.info("Feedback directory found.")
-           # Controlla se ci sono file di feedback recenti
-           for file in os.listdir(feedback_dir):
-               logger.info(f"Found feedback file: {file}")
-               file_path = os.path.join(feedback_dir, file)
-               # get file last edit
-               ti_m = os.path.getmtime(file_path)
-               last_edit = datetime.fromtimestamp(ti_m)
-               logger.info(f"Last modified time: {last_edit}")
-               if (datetime.now() - last_edit).days <= 1:
-                   logger.info("Recent feedback data found.")
-                   retrain = True
-                   break
-               else :
-                   logger.info("No recent feedback data found.")
-        if retrain:
-            feedback_files = [f for f in os.listdir(feedback_dir) if f.endswith(".csv")]
-            if feedback_files:
-                logger.info("updating training set with feedback data...")
-                feedback_dfs = []
-                for file in feedback_files:
-                    file_path = os.path.join(feedback_dir, file)
-                    logger.info(f"Loading feedback file: {file_path}")
-                    df = pd.read_csv(file_path)
-                    #se non trova user feedback usa la colonna sentiment
-                    df["user_feedback"] = df["user_feedback"].fillna(df["sentiment"])
-                    feedback_dfs.append(df)
-                feedback_data = pd.concat(feedback_dfs, ignore_index=True)
-                # Mappa i valori di user_feedback a etichette numeriche
-                label_mapping = {"negative": "negative", "neutral": "neutral", "positive": "positive", "0": "negative", "1": "neutral", "2": "positive", 0: "negative", 1: "neutral", 2: "positive"}
-                feedback_data['label'] = feedback_data['user_feedback'].map(label_mapping)
-                feedback_data=feedback_data[['text', 'label']]
-                logger.info(f"Feedback data shape: {feedback_data.shape}")
-                logger.info(f"Feedback data sample:\n{feedback_data.head()}")
-                # Crea un dataset Hugging Face dal DataFrame
-                features = Features({
-                    "text": Value("string"),
-                    "label": ClassLabel(names=["negative", "neutral", "positive"])
-                })
-                feedback_dataset = dataset["train"].from_pandas(feedback_data[['text', 'label']],features=features)
-                # Unisci i dataset
-                #dataset["train"] = concatenate_datasets([dataset["train"], feedback_dataset])
-                logger.info(f"Added {len(feedback_dataset)} samples from feedback to training set.")
-        else:
-            logger.info("No retrain needed.")
-            #exit the training function
-            return {}
+        
+        
+        logger.info("Loading dataset...")
 
 
+       # Leggiamo i dati
+        df = pd.read_sql_query("""
+            SELECT text, sentiment, user_feedback
+            FROM tweets
+            WHERE sentiment IS NOT NULL
+        """, conn)
+
+        if df.empty:
+            print("No data available for training.")
+            return
+    
+        df["label"] = df["user_feedback"].combine_first(df["sentiment"])
+
+         
+        df_final = df[["text", "label"]].copy()
 
         # Shuffle e split
-        feedback_dataset = feedback_dataset.shuffle(seed=42)
+        hf_dataset = Dataset.from_pandas(df_final)
+        feedback_dataset = hf_dataset.shuffle(seed=42)
         split_dataset = feedback_dataset.train_test_split(test_size=0.2)
 
         train_val_dataset = split_dataset['train']
@@ -258,20 +223,19 @@ class SentimentTrainer:
         results=trainer.evaluate(eval_dataset=tokenized_dataset["test"])
         logger.info(results)
 
-        #salvo in un csv start end e i result in un csv
-        results_file = os.path.join(log_dir, "training_results.csv")
+        
+        
+        #salvo nel db il result 
 
         results_df = pd.DataFrame([{
             "start_time": start_time,
             "end_time": end_time,
             **results
         }])
-        if os.path.exists(results_file):
-            df_existing = pd.read_csv(results_file)
-            df = pd.concat([df_existing, results_df])
-            results_df = df
-        results_df.to_csv(results_file, index=False)
-        logger.info(f"Training results saved to {results_file}")
+
+        # Inserisci i nuovi risultati
+        results_df.to_sql("training_results", conn, if_exists="append", index=False)
+        conn.close()
 
         # Salvataggio o caricamento del modello su Hugging Face Hub
         if push_to_hub:
@@ -292,6 +256,7 @@ class SentimentTrainer:
         return results
 
 if __name__ == "__main__":
-    trainer = SentimentTrainer(model_path="AChierici84/sentiment-roberta-finetuned", max_length=128)
+    data_path="../data/tweet.db"
+    trainer = SentimentTrainer(data_path=data_path,model_path="AChierici84/sentiment-roberta-finetuned", max_length=128)
     results = trainer.train(push_to_hub=True)
     print(results)

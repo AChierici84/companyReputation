@@ -3,6 +3,7 @@ import time
 import logging
 import pandas as pd
 import requests
+import sqlite3
 from datasets import Dataset
 from dotenv import load_dotenv
 from transformers import pipeline
@@ -27,9 +28,6 @@ load_dotenv()
 class Analisi:
     def __init__(self,data_path: str):
         self.data_path = data_path
-        self.dir=os.path.join("..","data","analysis")
-        if not os.path.exists(self.dir):
-            os.makedirs(self.dir)
 
     def analyze(self):
         """
@@ -42,30 +40,48 @@ class Analisi:
         sentiment_task = pipeline("sentiment-analysis", model=model_path, tokenizer=model_path)
 
         logger.info("Starting analysis of crawled data...")
-        # Carica i dati cercando csv in data_path
-        for file in os.listdir(self.data_path):
-            if file.endswith(".csv"):
-                file_path = os.path.join(self.data_path, file)
-                logger.info(f"Analyzing file: {file_path}")
-                df = pd.read_csv(file_path)
-                # applica il sentiment analysis sui testi
-                texts = df['text'].tolist()
-                start_time = time.time()
-                sentiments = sentiment_task(texts)
-                end_time = time.time()
-                logger.info(f"Sentiment analysis took {end_time - start_time} seconds")
-                # aggiungi i risultati al dataframe (label e percentuale di confidenza)
-                df['sentiment'] = [sentiment['label'] for sentiment in sentiments]
-                df['confidence'] = [sentiment['score'] for sentiment in sentiments]
-                # salva i risultati in un nuovo file csv
-                output_file = os.path.join(self.dir, f"analyzed_{file}")
-                df.to_csv(output_file, index=False)
-                logger.info(f"Saved analyzed data to {output_file}")
+        conn = sqlite3.connect(self.data_path)
+
+        df = pd.read_sql_query("""
+        SELECT id, text
+        FROM tweets
+        WHERE sentiment IS NULL
+        """, conn)
+
+        if df.empty:
+            logger.info("No new tweets to analyze.")
+            conn.close()
+        else:
+            logger.info(f"Found {len(df)} tweets to analyze.")
+
+            texts = df["text"].tolist()
+
+            start_time = time.time()
+            sentiments = sentiment_task(texts)
+            end_time = time.time()
+
+            logger.info(f"Sentiment analysis took {end_time - start_time} seconds")
+
+            df["sentiment"] = [s["label"] for s in sentiments]
+            df["confidence"] = [s["score"] for s in sentiments]
+
+            cursor = conn.cursor()
+            for _, row in df.iterrows():
+                cursor.execute("""
+                    UPDATE tweets
+                    SET sentiment = ?, confidence = ?
+                    WHERE id = ?
+                """, (row["sentiment"], row["confidence"], row["id"]))
+
+            conn.commit()
+            conn.close()
+
+            logger.info("Updated sentiment information in database.")
 
         logger.info("Analysis completed.")
 
 
 if __name__ == "__main__":
-    data_path=os.path.join("..","data","crawled")
+    data_path="../data/tweet.db"
     analisi = Analisi(data_path)
     analisi.analyze()
