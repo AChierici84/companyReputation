@@ -1,6 +1,7 @@
+import gradio as gr
 from fastapi import FastAPI
 from transformers import pipeline
-
+from fastapi.middleware.wsgi import WSGIMiddleware
 
 app = FastAPI(title="Company Reputation API")
 
@@ -23,9 +24,17 @@ def root():
 
 @app.post("/predict")
 def predict(text: str):
-    pipeline = get_pipeline()
-    result = pipeline(text)
-    return result
+    pipeline_model = get_pipeline()
+    return pipeline_model(text)
+    
+# Gradio
+def analyze(text):
+    pipeline_model = get_pipeline()
+    return pipeline_model(text)
+
+demo = gr.Interface(fn=analyze, inputs="text", outputs="text")
+demo.launch()
+
 
 #if __name__ == "__main__":
 #    import uvicorn
