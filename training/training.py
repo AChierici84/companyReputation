@@ -112,11 +112,12 @@ class SentimentTrainer:
         if df.empty:
             print("No data available for training.")
             return
-    
 
-        df["label"] = df["user_feedback"].combine_first(df["sentiment"])
-        label_mapping = {"negative": "negative", "neutral": "neutral", "positive": "positive", "0": "negative", "1": "neutral", "2": "positive", 0: "negative", 1: "neutral", 2: "positive"}
-        df['label'] = df['label'].map(label_mapping)
+        label_mapping = {"negative": 0, "neutral": 1, "positive": 2, "0":0, "1": 1, "2": 2, "0.0": 0, "1.0": 1, "2.0": 2}
+        
+        df["label"] = df["user_feedback"].fillna(df["sentiment"])
+        df["label"] = df["label"].astype(str).map(label_mapping)
+        logger.info(df.head())
          
         df_final = df[["text", "label"]].copy()
 
@@ -174,6 +175,8 @@ class SentimentTrainer:
 
         tokenized_dataset = tokenized_dataset.rename_column("label", "labels")
         tokenized_dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
+
+        logger.info(tokenized_dataset["train"][0])
 
         # Configurazione dell'addestramento
         logger.info("Setting up training arguments...")
