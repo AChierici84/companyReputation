@@ -34,7 +34,7 @@ class Analisi:
         Metodo che analizza i tweet scaricati e salva i risultati in un file.
         """
 
-        #scarica il mdoello corretto da huggingface
+        #scarica il modello corretto da huggingface
         model_path="AChierici84/sentiment-roberta-finetuned"
 
         sentiment_task = pipeline("sentiment-analysis", model=model_path, tokenizer=model_path)
