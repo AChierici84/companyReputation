@@ -23,6 +23,31 @@
   "links": [],
   "panels": [
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 20,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Training dashboard\n\nFine-tuning on feedbacks",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "frser-sqlite-datasource",
         "uid": "P2A49D6B692E1F39F"
@@ -69,7 +94,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 0
+        "y": 3
       },
       "id": 6,
       "options": {
@@ -170,7 +195,7 @@
         "h": 7,
         "w": 14,
         "x": 6,
-        "y": 0
+        "y": 3
       },
       "id": 7,
       "options": {
@@ -330,7 +355,7 @@
         "h": 8,
         "w": 20,
         "x": 0,
-        "y": 7
+        "y": 10
       },
       "id": 1,
       "options": {
@@ -465,7 +490,7 @@
         "h": 7,
         "w": 10,
         "x": 0,
-        "y": 15
+        "y": 18
       },
       "id": 2,
       "options": {
@@ -576,7 +601,7 @@
         "h": 7,
         "w": 10,
         "x": 10,
-        "y": 15
+        "y": 18
       },
       "id": 3,
       "options": {
@@ -683,7 +708,7 @@
         "h": 7,
         "w": 10,
         "x": 0,
-        "y": 22
+        "y": 25
       },
       "id": 4,
       "options": {
@@ -790,7 +815,7 @@
         "h": 7,
         "w": 10,
         "x": 10,
-        "y": 22
+        "y": 25
       },
       "id": 5,
       "options": {

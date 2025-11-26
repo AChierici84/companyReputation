@@ -23,6 +23,31 @@
   "links": [],
   "panels": [
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 16,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Amazon Help - Reputation analysis\n\nMonitoring X account @AmazonHelp",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "frser-sqlite-datasource",
         "uid": "P2A49D6B692E1F39F"
@@ -63,7 +88,7 @@
         "h": 8,
         "w": 4,
         "x": 0,
-        "y": 0
+        "y": 3
       },
       "id": 1,
       "options": {
@@ -155,7 +180,7 @@
         "h": 8,
         "w": 12,
         "x": 4,
-        "y": 0
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -230,7 +255,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 8
+        "y": 11
       },
       "id": 3,
       "options": {
@@ -322,7 +347,7 @@
         "h": 10,
         "w": 8,
         "x": 8,
-        "y": 8
+        "y": 11
       },
       "id": 5,
       "options": {
@@ -448,7 +473,7 @@
         "h": 10,
         "w": 16,
         "x": 0,
-        "y": 18
+        "y": 21
       },
       "id": 4,
       "options": {
@@ -568,7 +593,7 @@
         "h": 12,
         "w": 16,
         "x": 0,
-        "y": 28
+        "y": 31
       },
       "id": 6,
       "options": {
@@ -627,5 +652,5 @@
   "timezone": "browser",
   "title": "Amazon Help",
   "uid": "adzvfdj",
-  "version": 2
+  "version": 3
 }
