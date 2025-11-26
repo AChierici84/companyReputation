@@ -80,6 +80,8 @@ Sono state inoltre predisposte le seguenti azioni GitHub:
 * Continous integration : esecuzione unit test e integration test ad od ogni push/pull
 * Training and continuous deployement: eseguita ogni giorno alle 00:00
 
+Api di inference disponibile su spaces:
+[https://huggingface.co/spaces/AChierici84/companyReputation](https://huggingface.co/spaces/AChierici84/companyReputation)
 
 Infine sono state implementate dashboard per il monitoraggio del training e la reputation.
 
