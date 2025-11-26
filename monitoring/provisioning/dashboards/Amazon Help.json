@@ -19,13 +19,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "frser-sqlite-datasource",
-        "uid": "bf57918akycjke"
+        "uid": "P2A49D6B692E1F39F"
       },
       "fieldConfig": {
         "defaults": {
@@ -86,11 +86,11 @@
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "bf57918akycjke"
+            "uid": "ff59ndqej48owc"
           },
-          "queryText": "SELECT COUNT(*)\nFROM tweets",
+          "queryText": "SELECT COUNT(*)\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "queryType": "table",
-          "rawQueryText": "SELECT COUNT(*)\nFROM tweets",
+          "rawQueryText": "SELECT COUNT(*)\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "refId": "count",
           "timeColumns": [
             "time",
@@ -104,7 +104,7 @@
     {
       "datasource": {
         "type": "frser-sqlite-datasource",
-        "uid": "bf57918akycjke"
+        "uid": "P2A49D6B692E1F39F"
       },
       "fieldConfig": {
         "defaults": {
@@ -167,11 +167,11 @@
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "bf57918akycjke"
+            "uid": "ff59ndqej48owc"
           },
-          "queryText": "SELECT text, sentiment\nFROM tweets\n",
+          "queryText": "SELECT text, sentiment\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "queryType": "table",
-          "rawQueryText": "SELECT text, sentiment\nFROM tweets\n",
+          "rawQueryText": "SELECT text, sentiment\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -185,7 +185,7 @@
     {
       "datasource": {
         "type": "frser-sqlite-datasource",
-        "uid": "bf57918akycjke"
+        "uid": "P2A49D6B692E1F39F"
       },
       "fieldConfig": {
         "defaults": {
@@ -227,10 +227,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 8,
-        "x": 16,
-        "y": 0
+        "x": 0,
+        "y": 8
       },
       "id": 3,
       "options": {
@@ -262,11 +262,11 @@
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "bf57918akycjke"
+            "uid": "ff59ndqej48owc"
           },
-          "queryText": "SELECT COUNT(*) as count,sentiment\nFROM tweets\nGROUP BY sentiment",
+          "queryText": "SELECT COUNT(*) as count,sentiment\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to\nGROUP BY sentiment",
           "queryType": "table",
-          "rawQueryText": "SELECT COUNT(*) as count,sentiment\nFROM tweets\nGROUP BY sentiment",
+          "rawQueryText": "SELECT COUNT(*) as count,sentiment\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to\nGROUP BY sentiment",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -280,105 +280,7 @@
     {
       "datasource": {
         "type": "frser-sqlite-datasource",
-        "uid": "bf57918akycjke"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "fillOpacity": 80,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineWidth": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 16,
-        "x": 0,
-        "y": 8
-      },
-      "id": 4,
-      "options": {
-        "barRadius": 0.25,
-        "barWidth": 0.87,
-        "fullHighlight": false,
-        "groupWidth": 0.7,
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "orientation": "auto",
-        "showValue": "auto",
-        "stacking": "none",
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        },
-        "xField": "date",
-        "xTickLabelRotation": 0,
-        "xTickLabelSpacing": 200
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "bf57918akycjke"
-          },
-          "queryText": "SELECT COUNT(*) as count, date\nFROM tweets\nGROUP BY date",
-          "queryType": "table",
-          "rawQueryText": "SELECT COUNT(*) as count, date\nFROM tweets\nGROUP BY date",
-          "refId": "A",
-          "timeColumns": [
-            "time",
-            "ts"
-          ]
-        }
-      ],
-      "title": "Crawled Tweets",
-      "type": "barchart"
-    },
-    {
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "bf57918akycjke"
+        "uid": "P2A49D6B692E1F39F"
       },
       "description": "Confidence of sentiment analysis",
       "fieldConfig": {
@@ -419,7 +321,7 @@
       "gridPos": {
         "h": 10,
         "w": 8,
-        "x": 16,
+        "x": 8,
         "y": 8
       },
       "id": 5,
@@ -452,11 +354,11 @@
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "bf57918akycjke"
+            "uid": "ff59ndqej48owc"
           },
-          "queryText": "SELECT confidence\nFROM tweets\n",
+          "queryText": "SELECT confidence, date\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "queryType": "table",
-          "rawQueryText": "SELECT confidence\nFROM tweets\n",
+          "rawQueryText": "SELECT confidence, date\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -465,7 +367,250 @@
         }
       ],
       "title": "Medium Confidence",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "date"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
       "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P2A49D6B692E1F39F"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 16,
+        "x": 0,
+        "y": 18
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ff59ndqej48owc"
+          },
+          "queryText": "SELECT COUNT(*) as count, date\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to\nGROUP BY date",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(*) as count, date\nFROM tweets\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to\nGROUP BY date",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Crawled Tweets",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "dateFormat": "YYYY-MM-DD",
+                "destinationType": "time",
+                "targetField": "date"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P2A49D6B692E1F39F"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "hideFrom": {
+              "viz": false
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "author_id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 197
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 177
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 16,
+        "x": 0,
+        "y": 28
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "date"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "queryText": "SELECT author_id,date, text\nfrom tweets\nwhere sentiment = 'negative'\nAND strftime('%s', date) * 1000 BETWEEN $__from AND $__to\norder by date desc\nLIMIT 10",
+          "queryType": "table",
+          "rawQueryText": "SELECT author_id,date, text\nfrom tweets\nwhere sentiment = 'negative'\nAND strftime('%s', date) * 1000 BETWEEN $__from AND $__to\norder by date desc\nLIMIT 10",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Last issues",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "dateFormat": "YYYY-MM-DD",
+                "destinationType": "time",
+                "targetField": "date"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "preload": false,
@@ -475,12 +620,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Amazon Help",
   "uid": "adzvfdj",
-  "version": 3
+  "version": 2
 }

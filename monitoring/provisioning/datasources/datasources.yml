@@ -1,9 +1,11 @@
 apiVersion: 1
 
 datasources:
-  - name: Amazon Help Sentiment
+  - name: test-frser-sqlite-datasource
     type: frser-sqlite-datasource
     access: proxy
-    isDefault: false
+    isDefault: true
+    editable: false
     jsonData:
-      database: "/var/lib/grafana/data/tweet.db"
+      path: /var/lib/grafana/data/tweet.db/tweet.db
+      readOnly: true
