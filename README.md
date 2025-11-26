@@ -83,6 +83,16 @@ Sono state inoltre predisposte le seguenti azioni GitHub:
 
 Infine sono state implementate dashboard per il monitoraggio del training e la reputation.
 
+* Dashboard reputation
+
+<img width="1076" height="692" alt="Screenshot 2025-11-26 091825" src="https://github.com/user-attachments/assets/51c73839-f48b-4c31-8235-57d7b07b1ccc" />
+<img width="1093" height="742" alt="Screenshot 2025-11-26 091839" src="https://github.com/user-attachments/assets/1cdc3215-ac81-496c-a3f7-e0054187d19c" />
+
+* DashBoard training
+
+<img width="1338" height="687" alt="Screenshot 2025-11-26 145739" src="https://github.com/user-attachments/assets/c0a9c6fc-0762-4f0d-adec-3437995ff7ee" />
+<img width="1333" height="532" alt="Screenshot 2025-11-26 145805" src="https://github.com/user-attachments/assets/c7bd26d2-1de9-4fa7-b390-63857644c859" />
+
 
   
  
