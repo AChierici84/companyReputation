@@ -1,5 +1,6 @@
 import os
 import logging
+import shutil
 from datetime import datetime
 import numpy as np
 import pandas as pd
@@ -112,8 +113,10 @@ class SentimentTrainer:
             print("No data available for training.")
             return
     
-        df["label"] = df["user_feedback"].combine_first(df["sentiment"])
 
+        df["label"] = df["user_feedback"].combine_first(df["sentiment"])
+        label_mapping = {"negative": "negative", "neutral": "neutral", "positive": "positive", "0": "negative", "1": "neutral", "2": "positive", 0: "negative", 1: "neutral", 2: "positive"}
+        df['label'] = df['label'].map(label_mapping)
          
         df_final = df[["text", "label"]].copy()
 
@@ -236,6 +239,9 @@ class SentimentTrainer:
         # Inserisci i nuovi risultati
         results_df.to_sql("training_results", conn, if_exists="append", index=False)
         conn.close()
+
+        #aggiorna db monitoraggio
+        shutil.copy("../data/tweet.db","../monitoring/data/tweet.db/tweet.db")
 
         # Salvataggio o caricamento del modello su Hugging Face Hub
         if push_to_hub:
