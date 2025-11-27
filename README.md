@@ -84,9 +84,10 @@ Sono state inoltre predisposte le seguenti azioni GitHub:
 Api di inference disponibile su spaces:
 [https://huggingface.co/spaces/AChierici84/companyReputation](https://huggingface.co/spaces/AChierici84/companyReputation)
 
-Infine sono state implementate dashboard per il monitoraggio del training e la reputation.
+Infine sono state implementate con Grafana dashboard per il monitoraggio del training e la reputation.
 
-* Dashboard reputation
+* **Dashboard reputation**
+
 In questa dashboard troviamo il conteggio dei tweet scaricati (nel range temporale selezionato), alcuni Sample di tweets scaricati, la reputation nell'intervallo selezionato,
 la confidence media del modello per le analisi.
 
@@ -96,7 +97,8 @@ Un grafico in linea temporale , poi , riporta i tweet scaricati per giorno. E gl
 
 <img width="1093" height="742" alt="Screenshot 2025-11-26 091839" src="https://github.com/user-attachments/assets/1cdc3215-ac81-496c-a3f7-e0054187d19c" />
 
-* DashBoard training
+* **DashBoard training**
+  
 In questa dashboard troviamo il dettgalio sui training eseguiti per il fine tuning sui feedback. Sono riportati l'ultima accuracy del modello e le statistiche dell'ultimo training.
 Nella tabella è visibile il dettaglio dei dati sull'ultimo training.
 
