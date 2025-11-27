@@ -35,12 +35,6 @@ class TestIntegration:
         assert len(hf_token) > 0
         print("Hugging Face token retrieved successfully.")
 
-    def test_hf_token(self):
-        load_dotenv()
-        hf_token = os.getenv("HF_TOKEN")
-        assert len(hf_token) > 0
-        print("Hugging Face token retrieved successfully.")
-
     def test_api_keys(self):
         load_dotenv()
         api_key = os.getenv("API_KEY")
