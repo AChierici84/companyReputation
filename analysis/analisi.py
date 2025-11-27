@@ -4,9 +4,11 @@ import logging
 import pandas as pd
 import requests
 import sqlite3
+import shutil
 from datasets import Dataset
 from dotenv import load_dotenv
 from transformers import pipeline
+
 
 # Crea logs directory se non c'è
 log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
@@ -53,8 +55,9 @@ class Analisi:
             conn.close()
         else:
             logger.info(f"Found {len(df)} tweets to analyze.")
-
+            
             texts = df["text"].tolist()
+            logger.info(texts)
 
             start_time = time.time()
             sentiments = sentiment_task(texts)
@@ -77,6 +80,9 @@ class Analisi:
             conn.close()
 
             logger.info("Updated sentiment information in database.")
+
+            #aggiorna db monitoraggio
+            shutil.copy("../data/tweet.db","../monitoring/data/tweet.db/tweet.db")
 
         logger.info("Analysis completed.")
 

@@ -246,6 +246,12 @@ class SentimentTrainer:
         #aggiorna db monitoraggio
         shutil.copy("../data/tweet.db","../monitoring/data/tweet.db/tweet.db")
 
+        #se il modello non è abbastanza buono non lo salvo su hugging face
+        if (results["eval_accuracy"]<0.9):
+            logger.warning("Model regressing. Not pushing it.")
+            return;
+        
+
         # Salvataggio o caricamento del modello su Hugging Face Hub
         if push_to_hub:
 

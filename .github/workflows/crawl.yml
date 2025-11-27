@@ -1,4 +1,4 @@
-name: Company Reputation - Crawl and Analysis
+name: Company Reputation - Crawl
 
 on:
   workflow_dispatch:
@@ -31,6 +31,13 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Add project root to PYTHONPATH
       run: echo "PYTHONPATH=$PYTHONPATH:$PWD" >> $GITHUB_ENV
+    - name: Test with pytest
+      run: |
+        echo "API_KEY=${{secrets.API_KEY}}" >> $GITHUB_ENV
+        echo "API_KEY_SECRET=${{secrets.API_KEY_SECRET}}" >> $GITHUB_ENV
+        echo "BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
+        echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
+        pytest
     - name: Crawl Data
       working-directory: "crawling"
       run: |
@@ -38,7 +45,3 @@ jobs:
         echo "API_KEY_SECRET=${{secrets.API_KEY_SECRET}}" >> $GITHUB_ENV
         echo "BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
         python crawler.py
-    - name: Analyze Data
-      working-directory: "analysis"
-      run: |
-        python analisi.py
