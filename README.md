@@ -59,7 +59,7 @@ La valutazione del modello sul test set dava inizialmente:
 La matrice di confusione rivela una parziale difficoltà di classificazione tra classi "adiacenti" Es. tra negativo e neutro o tra positivo e neutro.
 Sono stati valutati inoltre alcuni test tra quelli mal classificati per tentare di individuare la ragione degli errori. 
 
-In alcuni casi espressioni come "it isn't too bad" traggono il sistema in inganno, in atri invece trovo la mood negativa sia accettabile in presenza di termini come "lost", "anything". A volte il tono del tweet nel complesso può essere neutro pur avendo alcuni termini negativi, non sempre è semplice per il modello raggiungere questo grado di ragionamento.
+In alcuni casi espressioni come "it isn't too bad" traggono il sistema in inganno, in altri invece trovo la mood negativa sia accettabile in presenza di termini come "lost", "anything". A volte il tono del tweet nel complesso può essere neutro pur avendo alcuni termini negativi, non sempre è semplice per il modello raggiungere questo grado di ragionamento.
 
 
 Il modello realizzato seppure non raggiunge prestazioni ottime si attesa su un discreto 73% e costituisce una buona base per l'inferenza. 
@@ -71,28 +71,41 @@ Il modello realizzato è stato salvato su hugging fase ed è disponibile al segu
 Sono stati realizzati quindi i seguenti moduli python:
 * Crawling module : scaricamento di tweet di un account X di customer support Es. @AmazonHelp
 * Analysis module : analisi dei tweet scaricati tramite il modello
-* Feedback module : feedback utente per confidence inferiore al 70%
+* Feedback module : feedback utente per confidence inferiore al 80%
 * Training module : modulo di retrain con feedback
-* Testing module : test di integrazione e raggiungilità dei componenti necessari al crawling e all'analisi
+* Testing module : test di integrazione, test di raggiungilità dei componenti necessari al crawling e all'analisi, test sulla distribuzione dati
 
 Sono state inoltre predisposte le seguenti azioni GitHub:
-* Crawl and Analysis : eseguita ogni ora scarica i nuovi tweet inviati all'account di customer support
+* Crawl : eseguita ogni mattina alle ore 8.00 scarica i nuovi tweet inviati all'account di customer support
+* Analysis : anlizza i nuovi tweet scaricati (esegue un'ora d'opo il task precedente)
 * Continous integration : esecuzione unit test e integration test ad od ogni push/pull
-* Training and continuous deployement: eseguita ogni giorno alle 00:00
+* Training and continuous deployement: retraining con feedback e nuovi tweet eseguita ogni giorno alle 00:00
 
 Api di inference disponibile su spaces:
 [https://huggingface.co/spaces/AChierici84/companyReputation](https://huggingface.co/spaces/AChierici84/companyReputation)
 
-Infine sono state implementate dashboard per il monitoraggio del training e la reputation.
+Infine sono state implementate con Grafana dashboard per il monitoraggio del training e la reputation.
 
-* Dashboard reputation
+* **Dashboard reputation**
+
+In questa dashboard troviamo il conteggio dei tweet scaricati (nel range temporale selezionato), alcuni Sample di tweets scaricati, la reputation nell'intervallo selezionato,
+la confidence media del modello per le analisi.
 
 <img width="1076" height="692" alt="Screenshot 2025-11-26 091825" src="https://github.com/user-attachments/assets/51c73839-f48b-4c31-8235-57d7b07b1ccc" />
+
+Un grafico in linea temporale , poi , riporta i tweet scaricati per giorno. E gli ultimi tweet negativi riscontrati nell'intervallo selezionato. 
+
 <img width="1093" height="742" alt="Screenshot 2025-11-26 091839" src="https://github.com/user-attachments/assets/1cdc3215-ac81-496c-a3f7-e0054187d19c" />
 
-* DashBoard training
+* **DashBoard training**
+  
+In questa dashboard troviamo il dettgalio sui training eseguiti per il fine tuning sui feedback. Sono riportati l'ultima accuracy del modello e le statistiche dell'ultimo training.
+Nella tabella è visibile il dettaglio dei dati sull'ultimo training.
 
 <img width="1338" height="687" alt="Screenshot 2025-11-26 145739" src="https://github.com/user-attachments/assets/c0a9c6fc-0762-4f0d-adec-3437995ff7ee" />
+
+Di seguito è riportata l'andamento della loss e dell'accuracy, il training time e i tempi medi di inferenza.
+
 <img width="1333" height="532" alt="Screenshot 2025-11-26 145805" src="https://github.com/user-attachments/assets/c7bd26d2-1de9-4fa7-b390-63857644c859" />
 
 
