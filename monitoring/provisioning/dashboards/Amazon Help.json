@@ -55,6 +55,188 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 3,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 3
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "queryText": "SELECT reputation_index,date\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN 1762174736474 AND 1764766736474",
+          "queryType": "table",
+          "rawQueryText": "SELECT reputation_index,date\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Reputation",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "date"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P2A49D6B692E1F39F"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 2,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 30
+              },
+              {
+                "color": "green",
+                "value": 60
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 12,
+        "y": 3
+      },
+      "id": 9,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/^Reputation index$/",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "queryText": "SELECT reputation_index as 'Reputation index'\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
+          "queryType": "table",
+          "rawQueryText": "SELECT reputation_index as 'Reputation index'\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Reputation",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P2A49D6B692E1F39F"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "thresholds"
           },
           "mappings": [],
@@ -88,7 +270,7 @@
         "h": 8,
         "w": 4,
         "x": 0,
-        "y": 3
+        "y": 11
       },
       "id": 1,
       "options": {
@@ -180,7 +362,7 @@
         "h": 8,
         "w": 12,
         "x": 4,
-        "y": 3
+        "y": 11
       },
       "id": 2,
       "options": {
@@ -255,7 +437,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 11
+        "y": 19
       },
       "id": 3,
       "options": {
@@ -347,7 +529,7 @@
         "h": 10,
         "w": 8,
         "x": 8,
-        "y": 11
+        "y": 19
       },
       "id": 5,
       "options": {
@@ -473,7 +655,7 @@
         "h": 10,
         "w": 16,
         "x": 0,
-        "y": 21
+        "y": 29
       },
       "id": 4,
       "options": {
@@ -593,7 +775,7 @@
         "h": 12,
         "w": 16,
         "x": 0,
-        "y": 31
+        "y": 39
       },
       "id": 6,
       "options": {
@@ -652,5 +834,5 @@
   "timezone": "browser",
   "title": "Amazon Help",
   "uid": "adzvfdj",
-  "version": 3
+  "version": 2
 }
