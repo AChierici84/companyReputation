@@ -80,6 +80,7 @@ Sono stati realizzati quindi i seguenti moduli python:
 * Testing module : test di integrazione, test di raggiungilità dei componenti necessari al crawling e all'analisi, test sulla distribuzione dati
 
 Sono state inoltre predisposte le seguenti azioni GitHub:
+* Configuration: gestione centralizzatea delle configuraioni per i moduli del sistema
 * Crawl : eseguita ogni mattina alle ore 8.00 scarica i nuovi tweet inviati all'account di customer support
 * Analysis : anlizza i nuovi tweet scaricati (esegue un'ora d'opo il task precedente)
 * Continous integration : esecuzione unit test e integration test ad od ogni push/pull
