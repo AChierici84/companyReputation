@@ -1,9 +1,9 @@
-name: Company Reputation - Analysis
+name: Company Reputation - Reputation Analysis
 
 on:
   workflow_dispatch:
   schedule:
-      - cron: "0 9 * * *"
+      - cron: "0 10 * * *"
 
 env:
   API_KEY: ${{secrets.API_KEY}}
@@ -40,6 +40,6 @@ jobs:
         echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
         pytest
     - name: Analyze Data
-      working-directory: "analysis"
+      working-directory: "reputation"
       run: |
-        python analisi.py
+        python reputation.py
