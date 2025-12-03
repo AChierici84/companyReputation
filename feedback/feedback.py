@@ -34,12 +34,15 @@ class FeedbackManager:
        
         conn = sqlite3.connect(self.data_path)
 
-        # Leggi solo i tweet che hanno sentiment ma non hanno feedback, oppure bassa confidenza
+        # Leggi solo i 50 peggiori tweet in termini di confidence dalla tabella tweets (che non hanno già feedback dell'utente)
         query = f"""
             SELECT id, text, sentiment, confidence, user_feedback
             FROM tweets
             WHERE sentiment IS NOT NULL and confidence IS NOT NULL 
-            AND (confidence < {self.confidence_threshold} AND user_feedback IS NULL)
+            AND user_feedback IS NULL
+            AND confidence < {self.confidence_threshold}
+            ORDER BY confidence ASC
+            LIMIT 50
         """
         df = pd.read_sql_query(query, conn)
 
