@@ -39,7 +39,6 @@ jobs:
         echo "BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
         echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
         pytest
-    - name: Analyze Data
-      working-directory: "reputation"
+    - name: Reputation Analysis
       run: |
-        python reputation.py
+        python -m reputation.reputation

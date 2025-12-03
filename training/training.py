@@ -5,6 +5,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import sqlite3
+from configuration.config import Config
 import evaluate
 from huggingface_hub import login
 from dotenv import load_dotenv
@@ -36,18 +37,34 @@ logger.addHandler(file_handler)
 
 class SentimentTrainer:
 
-    def __init__(self, data_path: str, model_path: str, max_length: int = 128):
+    def __init__(self):
         """
         Inizializza il SentimentTrainer con il modello e il tokenizer specificati.
         Args:
             model_path (str): Il percorso del modello pre-addestrato da utilizzare.
             max_length (int): La lunghezza massima per la tokenizzazione.
         """
-        self.model_path = model_path
-        self.max_length = max_length
-        self.data_path = data_path
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_path, num_labels=3)
+        self.config = Config("./configuration/config.ini")
+        self.model_path = self.config.get('training', 'model')
+        self.max_length = int(self.config.get('training', 'max_length'))
+        self.data_path = self.config.get('database', 'path')
+        self.monitoring_path = self.config.get('database', 'monitoring_path')
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        self.model = AutoModelForSequenceClassification.from_pretrained(self.model_path, num_labels=3)
+        self.repo_name = self.config.get('training', 'repo_name')
+        self.username = self.config.get('training', 'username')
+ 
+        self.use_huggingface_hub = self.config.get('training', 'use_huggingface_hub')
+        self.learning_rate = float(self.config.get('training', 'learning_rate'))
+        self.batch_size = int(self.config.get('training', 'batch_size'))
+        self.epochs = int(self.config.get('training', 'epochs'))
+        self.weight_decay = float(self.config.get('training', 'weight_decay'))
+        self.load_best_model = self.config.get('training', 'load_best_model')
+        self.eval_strategy = self.config.get('training', 'eval_strategy')
+        self.save_strategy = self.config.get('training', 'save_strategy')
+        self.logging_steps = int(self.config.get('training', 'logging_steps'))
+        self.dataloader_num_workers = int(self.config.get('training', 'dataloader_num_workers'))
+
         
         self.accuracy = evaluate.load("accuracy")
         self.f1 = evaluate.load("f1")
@@ -83,7 +100,7 @@ class SentimentTrainer:
         )
 
 
-    def train(self,push_to_hub=False):
+    def train(self):
         """
         Addestra un modello di sentiment analysis utilizzando il dataset tweet_eval.
         Args:
@@ -181,17 +198,17 @@ class SentimentTrainer:
         # Configurazione dell'addestramento
         logger.info("Setting up training arguments...")
         training_args = TrainingArguments(
-            output_dir="sentiment-roberta-finetuned", #directory di output
-            eval_strategy="epoch", # validaziane alla fine di ogni epoca
-            save_strategy="epoch", # salvataggio del modello alla fine di ogni epoca
-            learning_rate=2e-5,   #learning_rate
-            per_device_train_batch_size=4,  #batch size training
-            per_device_eval_batch_size=4, #batch size validazione
-            num_train_epochs=1, # numero di epoche
-            weight_decay=0.01, #regolarizzazione (riduce i pesi del modello ogni step)
-            load_best_model_at_end=True, #carichiamo il modello migliore
-            logging_steps=50,  # ogni quanti step salvare i log
-            dataloader_num_workers=2, #craicamento dati più veloce
+            output_dir=self.repo_name, #directory di output
+            eval_strategy=self.eval_strategy, # validaziane alla fine di ogni epoca
+            save_strategy=self.save_strategy, # salvataggio del modello alla fine di ogni epoca
+            learning_rate=self.learning_rate,   #learning_rate
+            per_device_train_batch_size=self.batch_size,  #batch size training
+            per_device_eval_batch_size=self.batch_size, #batch size validazione
+            num_train_epochs=self.epochs, # numero di epoche
+            weight_decay=self.weight_decay, #regolarizzazione (riduce i pesi del modello ogni step)
+            load_best_model_at_end=self.load_best_model, #carichiamo il modello migliore
+            logging_steps=self.logging_steps,  # ogni quanti step salvare i log
+            dataloader_num_workers=self.dataloader_num_workers, #craicamento dati più veloce
             report_to=[]
         )
 
@@ -244,7 +261,7 @@ class SentimentTrainer:
         conn.close()
 
         #aggiorna db monitoraggio
-        shutil.copy("../data/tweet.db","../monitoring/data/tweet.db/tweet.db")
+        shutil.copy(self.data_path,self.monitoring_path)
 
         #se il modello non è abbastanza buono non lo salvo su hugging face
         if (results["eval_accuracy"]<0.9):
@@ -253,25 +270,20 @@ class SentimentTrainer:
         
 
         # Salvataggio o caricamento del modello su Hugging Face Hub
-        if push_to_hub:
+        if self.use_huggingface_hub.lower() == 'true':
 
             login(token=os.getenv("HF_TOKEN")) # Effettua il login utilizzando il token di accesso
-
-            repo_name = "sentiment-roberta-finetuned"  # il nome che vuoi dare al modello sul tuo account
-            username = "AChierici84"
-
-            model.push_to_hub(f"{username}/{repo_name}")
-            tokenizer.push_to_hub(f"{username}/{repo_name}")
-            dataset.push_to_hub(repo_name)
+            model.push_to_hub(f"{self.username}/{self.repo_name}")
+            tokenizer.push_to_hub(f"{self.username}/{self.repo_name}")
+            dataset.push_to_hub(self.repo_name)
         else:
-            trainer.save_model("sentiment-roberta-finetuned")
-            tokenizer.save_pretrained("sentiment-roberta-finetuned")
-            dataset.save_to_disk("tweet_eval_sentiment_dataset")
+            trainer.save_model(self.repo_name)
+            tokenizer.save_pretrained(self.repo_name)
+            dataset.save_to_disk(self.repo_name)
 
         return results
 
 if __name__ == "__main__":
-    data_path="../data/tweet.db"
-    trainer = SentimentTrainer(data_path=data_path,model_path="AChierici84/sentiment-roberta-finetuned", max_length=128)
-    results = trainer.train(push_to_hub=True)
+    trainer = SentimentTrainer()
+    results = trainer.train()
     print(results)

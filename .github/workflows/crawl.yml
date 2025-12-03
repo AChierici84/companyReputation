@@ -40,9 +40,8 @@ jobs:
         echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
         pytest
     - name: Crawl Data
-      working-directory: "crawling"
       run: |
         echo "API_KEY=${{secrets.API_KEY}}" >> $GITHUB_ENV
         echo "API_KEY_SECRET=${{secrets.API_KEY_SECRET}}" >> $GITHUB_ENV
         echo "BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
-        python crawler.py
+        python -m crawling.crawler

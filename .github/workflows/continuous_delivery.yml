@@ -39,8 +39,7 @@ jobs:
         echo "BEARER_TOKEN=${{secrets.BEARER_TOKEN}}" >> $GITHUB_ENV
         echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
         pytest
-    - name: training Data and Publish Model
-      working-directory: "training"
+    - name: Training Data and Publish Model
       run: |
         echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
-        python training.py
+        python -m training.training

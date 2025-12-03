@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 import sqlite3
 import shutil
+from configuration.config import Config
 from datasets import Dataset
 from dotenv import load_dotenv
 from transformers import pipeline
@@ -28,8 +29,11 @@ logger.addHandler(file_handler)
 load_dotenv()
 
 class Analisi:
-    def __init__(self,data_path: str):
-        self.data_path = data_path
+    def __init__(self):
+        self.config = Config("./configuration/config.ini")
+        self.data_path = self.config.get('database', 'path')
+        self.model_path = self.config.get('analysis', 'model')
+        self.monitoring_path = self.config.get('database', 'monitoring_path')
 
     def analyze(self):
         """
@@ -37,9 +41,7 @@ class Analisi:
         """
 
         #scarica il modello corretto da huggingface
-        model_path="AChierici84/sentiment-roberta-finetuned"
-
-        sentiment_task = pipeline("sentiment-analysis", model=model_path, tokenizer=model_path)
+        sentiment_task = pipeline("sentiment-analysis", model=self.model_path, tokenizer=self.model_path)
 
         logger.info("Starting analysis of crawled data...")
         conn = sqlite3.connect(self.data_path)
@@ -82,12 +84,11 @@ class Analisi:
             logger.info("Updated sentiment information in database.")
 
             #aggiorna db monitoraggio
-            shutil.copy("../data/tweet.db","../monitoring/data/tweet.db/tweet.db")
+            shutil.copy(self.data_path,self.monitoring_path)
 
         logger.info("Analysis completed.")
 
 
 if __name__ == "__main__":
-    data_path="../data/tweet.db"
-    analisi = Analisi(data_path)
+    analisi = Analisi()
     analisi.analyze()

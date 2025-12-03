@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import pandas as pd
+from configuration.config import Config
 import time
 import random
 
@@ -14,7 +15,8 @@ def random_number(h):
 
 
 if __name__ == "__main__":
-    data_path="../data/tweet.db"
+    config = Config("../configuration/config.ini")
+    data_path = config.get('database', 'path')
 
     cnx = sqlite3.connect(data_path)
 

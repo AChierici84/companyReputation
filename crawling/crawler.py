@@ -4,6 +4,7 @@ import time
 import logging
 import pandas as pd
 import requests
+from configuration.config import Config
 from dotenv import load_dotenv
 import json
 from requests.auth import AuthBase, HTTPBasicAuth
@@ -33,9 +34,15 @@ class Crawler:
 
         if not api_key or not api_secret or not bearer_token:
             raise RuntimeError("Twitter API credentials not found in environment variables")
+        self.config = Config("./configuration/config.ini")
         self.auth = HTTPBasicAuth(api_key, api_secret)
-        self.search_url = "https://api.twitter.com/2/tweets/search/recent"
+        self.search_url = self.config.get('crawler', 'search')
+        self.oauth2_url = self.config.get('crawler', 'oauth2')
         self.bearerToken = bearer_token
+        self.database= self.config.get('database', 'path')
+        self.data_dir = self.config.get('crawler', 'data')
+        self.last_id_file = self.config.get('crawler', 'last_id')
+        self.keywords_file = self.config.get('crawler', 'keywords.file')
 
         # Parametri: start_time,end_time,since_id,until_id,max_results,next_token,
         # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
@@ -45,7 +52,7 @@ class Crawler:
         """
         chiede il bearer token per l'autenticazione
         """
-        url = "https://api.twitter.com/oauth2/token"
+        url = self.oauth2_url
         payload = {'grant_type': 'client_credentials'}
         response = requests.post(url, data=payload, auth=self.auth)
         if response.status_code != 200:
@@ -86,7 +93,7 @@ class Crawler:
         """
         Esegue il crawling dei tweet per le parole chiave specificate nel file keywords.txt
         """
-        with open("keywords.txt", "r") as f:
+        with open(self.keywords_file, "r") as f:
             keywords = f.readlines()
             for keyword in keywords:
                 logger.info(f"Crawling tweets for keyword: {keyword.strip()}")
@@ -107,7 +114,7 @@ class Crawler:
                 print(json.dumps(json_response, indent=4, sort_keys=True))
                 logger.info(f"Found results: {json_response['meta']['result_count']} tweets")
 
-                sql_database_path=os.path.join("..","data","tweet.db")
+                sql_database_path=self.database
 
                 # Salvare i tweet in un db sqlite
                 if json_response['meta']['result_count'] > 0:
@@ -131,7 +138,7 @@ class Crawler:
 
                     #salva il last id per riprendere il crawling in futuro
                     last_id = json_response['data'][-1]['id']
-                    with open(os.path.join(data_dir,f"last_id.txt"), "w") as f:
+                    with open(self.last_id_file, "w") as f:
                         f.write(last_id)
                     logger.info(f"Updated last id to: {last_id}")
 

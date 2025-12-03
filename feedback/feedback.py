@@ -1,6 +1,7 @@
 import os
 import logging
 import sqlite3
+from configuration.config import Config
 import pandas as pd
 
 # Crea logs directory se non c'è
@@ -20,8 +21,9 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 class FeedbackManager:
-    def __init__(self, data_path: str):
-        self.data_path = data_path
+    def __init__(self):
+        self.config = Config("./configuration/config.ini")
+        self.data_path = self.config.get('database', 'path')
         self.confidence_threshold=0.8
 
     def save_feedback(self):
@@ -70,6 +72,5 @@ class FeedbackManager:
 
 
 if __name__ == "__main__":
-    data_path = "../data/tweet.db"
-    feedback_manager = FeedbackManager(data_path)
+    feedback_manager = FeedbackManager()
     feedback_manager.save_feedback()

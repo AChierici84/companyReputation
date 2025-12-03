@@ -40,6 +40,5 @@ jobs:
         echo "HF_TOKEN=${{secrets.HF_TOKEN}}" >> $GITHUB_ENV
         pytest
     - name: Analyze Data
-      working-directory: "analysis"
       run: |
-        python analisi.py
+        python -m analysis.analisi

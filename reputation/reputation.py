@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 import sqlite3
 import shutil
+from configuration.config import Config
 from datasets import Dataset
 from dotenv import load_dotenv
 from transformers import pipeline
@@ -28,8 +29,11 @@ logger.addHandler(file_handler)
 load_dotenv()
 
 class ReputationAnalysis:
-    def __init__(self,data_path: str):
-        self.data_path = data_path
+    def __init__(self):
+        self.config = Config("./configuration/config.ini")
+        self.data_path = self.config.get('database', 'path')
+        self.monitoring_path = self.config.get('database', 'monitoring_path')
+        self.weights = [float(w) for w in self.config.get('reputation', 'weights').split(',')]
 
     def calculate(self):
         """
@@ -86,7 +90,9 @@ class ReputationAnalysis:
                     #calcolo reputation index
                     total = positive_count + negative_count + neutral_count
                     if total > 0:
-                        reputation_index = (positive_count*2 + neutral_count*1 - negative_count*3) / total
+                        reputation_index = (positive_count*self.weights[0] + neutral_count*self.weights[1] - negative_count*self.weights[2]) / total
+                        #round 2 decimals
+                        reputation_index = round(reputation_index, 2)
                     else:
                         reputation_index = 0
 
@@ -116,12 +122,11 @@ class ReputationAnalysis:
             logger.info("Updated reputation information in database.")
 
             #aggiorna db monitoraggio
-            shutil.copy("../data/tweet.db","../monitoring/data/tweet.db/tweet.db")
+            shutil.copy(self.data_path,self.monitoring_path)
 
         logger.info("Reputation analysis completed.")
 
 
 if __name__ == "__main__":
-    data_path="../data/tweet.db"
-    reputation = ReputationAnalysis(data_path)
+    reputation = ReputationAnalysis()
     reputation.calculate()

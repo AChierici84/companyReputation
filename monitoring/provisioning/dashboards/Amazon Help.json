@@ -216,7 +216,7 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "queryText": "SELECT reputation_index as 'Reputation index'\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
+          "queryText": "SELECT reputation_index as 'Reputation index'\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN 1762180616234 AND 1764772616234",
           "queryType": "table",
           "rawQueryText": "SELECT reputation_index as 'Reputation index'\nFROM REPUTATION\nWHERE strftime('%s', date) * 1000 BETWEEN $__from AND $__to",
           "refId": "A",
@@ -226,7 +226,7 @@
           ]
         }
       ],
-      "title": "Reputation",
+      "title": "Reputation Score",
       "type": "gauge"
     },
     {
@@ -834,5 +834,5 @@
   "timezone": "browser",
   "title": "Amazon Help",
   "uid": "adzvfdj",
-  "version": 2
+  "version": 3
 }
