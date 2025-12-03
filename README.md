@@ -71,6 +71,10 @@ Il modello realizzato è stato salvato su hugging fase ed è disponibile al segu
 Sono stati realizzati quindi i seguenti moduli python:
 * Crawling module : scaricamento di tweet di un account X di customer support Es. @AmazonHelp
 * Analysis module : analisi dei tweet scaricati tramite il modello
+* Reputation module : calcolo della reputation giornaliera  applicando un punteggio ponderato
+  
+   Reputation score = (2 * P + 1 * N -3 * Neg) / (P + N + Neg)
+  
 * Feedback module : feedback utente per confidence inferiore al 80%
 * Training module : modulo di retrain con feedback
 * Testing module : test di integrazione, test di raggiungilità dei componenti necessari al crawling e all'analisi, test sulla distribuzione dati
@@ -88,9 +92,11 @@ Infine sono state implementate con Grafana dashboard per il monitoraggio del tra
 
 * **Dashboard reputation**
 
-In questa dashboard troviamo il conteggio dei tweet scaricati (nel range temporale selezionato), alcuni Sample di tweets scaricati, la reputation nell'intervallo selezionato,
+In questa dashboard troviamo l'andamento dell'indice di reputazione, il valore medio nell'intervallo considerato,
+il conteggio dei tweet scaricati (nel range temporale selezionato), alcuni Sample di tweets scaricati, la reputation nell'intervallo selezionato,
 la confidence media del modello per le analisi.
 
+<img width="1069" height="306" alt="reputation" src="https://github.com/user-attachments/assets/0f852177-923f-46cc-88d3-086538aa84f6" />
 <img width="1076" height="692" alt="Screenshot 2025-11-26 091825" src="https://github.com/user-attachments/assets/51c73839-f48b-4c31-8235-57d7b07b1ccc" />
 
 Un grafico in linea temporale , poi , riporta i tweet scaricati per giorno. E gli ultimi tweet negativi riscontrati nell'intervallo selezionato. 
