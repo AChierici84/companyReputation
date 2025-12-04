@@ -188,6 +188,14 @@ class SentimentTrainer:
         for param in model.roberta.parameters():
             param.requires_grad = False
 
+        # Sblocca solo gli ultimi 2 layer
+        for param in model.roberta.encoder.layer[-2:].parameters():
+            param.requires_grad = True
+
+        # Sblocca il classificatore finale
+        for param in model.classifier.parameters():
+            param.requires_grad = True
+
         tokenized_dataset = dataset.map(self.tokenize, batched=True)
 
         tokenized_dataset = tokenized_dataset.rename_column("label", "labels")
