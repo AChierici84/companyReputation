@@ -2,8 +2,6 @@ name: Company Reputation - Crawl
 
 on:
   workflow_dispatch:
-  schedule:
-      - cron: "0 8 1 9 *"
 
 env:
   API_KEY: ${{secrets.API_KEY}}
